@@ -4,8 +4,10 @@ const fs = require('fs');
 //dung cai thu vien express
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-const imagesController = require(__dirname + '/modules/images/imagesController');
+const config = require('./config.json');
+const imagesRouter = require(__dirname + '/modules/api/images/');
 
 var app = express();
 
@@ -18,49 +20,17 @@ app.get('/', (req, res) => {
   res.send('./public/index.html');
 })
 
-app.post('/image', (req, res) => {
-  //doc du lieu tu cai file imageData
-  var imageInfoCollection = imagesController.fetchImageCollection();
+app.use('/api/image', imagesRouter);
 
-  //khai bao object
-  var imageInfo = {
-    name : req.body.name,
-    imageLink : req.body.imageLink,
-    description : req.body.description
+mongoose.connect(config.connectionString, (err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('Connected db success');
   }
-
-  console.log('post data ',req.body);
-
-  //push data moi vao collection
-  imageInfoCollection.push(imageInfo);
-
-  //luu lai vao file
-  imagesController.saveImageCollection(imageInfoCollection);
-  //bao thanh cong
-  res.send('Success');
-})
-
-app.get('/image', (req,res) => {
-  var imageInfoCollection = imagesController.fetchImageCollection();
-
-  var htmlString = '';
-
-  imageInfoCollection.forEach((data) => {
-    htmlString += `<div>${data.name}</div><img src="${data.imageLink}"><div>${data.description}</div>`;
-  })
-
-  res.send(htmlString);
-})
-
-app.put('/image', (req, res) => {
-  console.log(req.body);
-})
-
-app.delete('/image', (req, res) => {
-  console.log(req.body);
 })
 
 //mo 1 cai port de chay local
-app.listen(6969, (req, res) => {
-  console.log('app listen on 6969');
+app.listen(config.port, (req, res) => {
+  console.log(`app listen on ${config.port}`);
 })
