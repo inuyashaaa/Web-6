@@ -21,9 +21,19 @@ Router.post('/', (req, res) => {
 });
 
 Router.get('/', (req, res) => {
-  var imageInfoCollection = imagesController.fetchImageCollection();
-
-  res.send(imageInfoCollection);
+  try {
+    imagesController.getAllImages((err, doc) => {
+       if (err) {
+         console.log(err);
+         res.send("Co loi xay ra, check di");
+       } else {
+         res.send(doc);
+       }
+     });
+  } catch (e) {
+    console.log(e);
+    res.send("Co exception");
+  }
 })
 
 Router.put('/', (req, res) => {

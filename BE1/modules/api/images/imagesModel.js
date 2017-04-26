@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var imagesModel = new Schema({
-  id : { type : Number, require: true },
+  id : { type : Number, required: true },
   name : { type : String, default : '' },
   imageLink : { type : String , default : ''},
   description : { type : String },

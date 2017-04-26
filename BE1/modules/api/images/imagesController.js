@@ -11,6 +11,17 @@ var addImage = (data) => {
   })
 }
 
+var getAllImages = (cb) => {
+  imagesModel.find({}, (err, doc) => {
+    if (err) {
+      cb(err);
+    } else {
+      cb(null, doc);
+    }
+  })
+}
+
+
 var fetchImageCollection = () => {
   var imageInfoCollection = [];
 
@@ -47,5 +58,6 @@ module.exports = {
   fetchImageCollection,
   saveImageCollection,
   updateImageCollectionById,
-  addImage
+  addImage,
+  getAllImages
 }
