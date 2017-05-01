@@ -7,7 +7,7 @@ var imagesModel = new Schema({
   name : { type : String, default : '' },
   imageLink : { type : String , default : ''},
   description : { type : String },
-  views : { type : Number, default : 0},
+  views : { type : Number, default : 0 },
   likes : [{
     likeBy : { type : Number }
   }],

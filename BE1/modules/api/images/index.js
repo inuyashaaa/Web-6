@@ -15,9 +15,14 @@ Router.post('/', (req, res) => {
   console.log('post data ',req.body);
 
   //luu lai vao database
-  imagesController.addImage(imageInfo);
-  //bao thanh cong
-  res.send('Success');
+  imagesController.addImage(imageInfo, (err, doc) => {
+    if (err) {
+      console.log(err);
+      res.send('co loi xay ra');
+    } else {
+      res.send('success');
+    }
+  });
 });
 
 Router.get('/', (req, res) => {
