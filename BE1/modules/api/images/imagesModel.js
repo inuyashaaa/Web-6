@@ -15,6 +15,6 @@ var imagesModel = new Schema({
     comment : { type : String },
     commentBy : { type : Number }
   }]
-});
+}, { timestamps : true });
 
 module.exports = mongoose.model('images', imagesModel);
