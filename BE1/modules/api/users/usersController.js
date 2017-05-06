@@ -4,7 +4,7 @@ const usersModel = require('./usersModel');
 const token = require('../../utilities/token');
 
 var createUser = (data, callback) => {
-  usersModel.find({})
+  usersModel.findOne({})
     .select('id')
     .sort({id : -1})
     .exec((err, doc) => {
@@ -18,8 +18,12 @@ var createUser = (data, callback) => {
         } else {
           id = 1;
         }
+        data.id = id;
         usersModel.create(data, (err, doc) => {
           if (err) {
+            console.log(err);
+            console.log('message', err.message);
+            console.log('error message', err.errmsg);
             callback(err);
           } else {
             callback(null,doc);
@@ -44,6 +48,21 @@ var getUserByUsername = (username, callback) => {
   }
 }
 
+var searchUserByUsernameAndEmail = (searchString, callback) => {
+  try {
+    usersModel.find({ $text: { $search: searchString } }).exec((err, doc) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, doc);
+      }
+    })
+  } catch (e) {
+    console.log(e);
+    callback(e);
+  }
+}
+
 var signIn = (data, callback) => {
   if (data && data.username && data.password) {
     getUserByUsername(data.username, (err, user) => {
@@ -51,8 +70,13 @@ var signIn = (data, callback) => {
         bcrypt.hash(data.password, salt, (err, hash) => {
           data.password = hash;
           console.log('hash',hash);
-        }
-      }
+        })
+      })
     })
   }
+}
+
+module.exports = {
+  createUser,
+  searchUserByUsernameAndEmail
 }

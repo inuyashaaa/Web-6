@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 
 const config = require('./config.json');
 const imagesRouter = require(__dirname + '/modules/api/images/');
+const usersRouter = require(__dirname + '/modules/api/users/')
 
 var app = express();
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/image', imagesRouter);
+app.use('/api/users', usersRouter);
 
 mongoose.connect(config.connectionString, (err) => {
   if (err) {

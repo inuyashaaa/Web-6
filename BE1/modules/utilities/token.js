@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 var signToken = (user) => {
-  return jwt.sign({ user.username, user.email }, user._id.toString());
+  return jwt.sign({ username : user.username, email : user.email }, user._id.toString());
 }
 
 var verifyToken = (user, token) => {
