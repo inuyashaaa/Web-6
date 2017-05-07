@@ -8,7 +8,8 @@ const mongoose = require('mongoose');
 
 const config = require('./config.json');
 const imagesRouter = require(__dirname + '/modules/api/images/');
-const usersRouter = require(__dirname + '/modules/api/users/')
+const usersRouter = require(__dirname + '/modules/api/users/');
+const clientRouter = require('./client');
 
 var app = express();
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
   res.send('./public/index.html');
 })
 
+app.use('/', clientRouter);
 app.use('/api/image', imagesRouter);
 app.use('/api/users', usersRouter);
 
