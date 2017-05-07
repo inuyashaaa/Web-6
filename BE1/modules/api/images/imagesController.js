@@ -43,6 +43,33 @@ var getAllImages = (cb) => {
   })
 }
 
+var getAllCookedImages = (cb) => {
+  getAllImages((err, doc) => {
+    if (err) {
+      console.log(err);
+      cb(err);
+    } else {
+      var newDoc = doc.map((value) => {
+        return cookImageData(value);
+      })
+      cb(null, newDoc);
+    }
+  })
+}
+
+var cookImageData = (rawImageData) => {
+  return {
+    id : rawImageData._id,
+    imageUrl : rawImageData.imageLink,
+    view : rawImageData.views,
+    plus : rawImageData.likes.length,
+    posterAvatar : rawImageData.createBy ? rawImageData.createBy.avatar : '',
+    posterName : rawImageData.createBy ? rawImageData.createBy.username : '',
+    posterTitle : rawImageData.name,
+    content : rawImageData.description
+  }
+}
+
 
 var fetchImageCollection = () => {
   var imageInfoCollection = [];
@@ -81,5 +108,6 @@ module.exports = {
   saveImageCollection,
   updateImageCollectionById,
   addImage,
-  getAllImages
+  getAllImages,
+  getAllCookedImages
 }

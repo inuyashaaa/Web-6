@@ -28,7 +28,7 @@ Router.post('/', (req, res) => {
 
 Router.get('/', (req, res) => {
   try {
-    imagesController.getAllImages((err, doc) => {
+    imagesController.getAllCookedImages((err, doc) => {
        if (err) {
          console.log(err);
          res.send("Co loi xay ra, check di");
