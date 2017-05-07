@@ -18,10 +18,6 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json({ extended : true}));
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.get('/', (req, res) => {
-  res.send('./public/index.html');
-})
-
 app.use('/', clientRouter);
 app.use('/api/image', imagesRouter);
 app.use('/api/users', usersRouter);
