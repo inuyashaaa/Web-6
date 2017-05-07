@@ -9,7 +9,8 @@ Router.post('/', (req, res) => {
   var imageInfo = {
     name : req.body.name,
     imageLink : req.body.imageLink,
-    description : req.body.description
+    description : req.body.description,
+    createBy : req.body.userId
   }
 
   console.log('post data ',req.body);

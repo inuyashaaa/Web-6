@@ -33,10 +33,11 @@ var addImage = (data, callback) => {
 }
 
 var getAllImages = (cb) => {
-  imagesModel.find({}, (err, doc) => {
+  imagesModel.find({}).populate('createBy').exec((err, doc) => {
     if (err) {
       cb(err);
     } else {
+      console.log('result',doc);
       cb(null, doc);
     }
   })
