@@ -20,3 +20,8 @@
   max-width: 40px;
   max-height: 40px;
 }
+
+.table .user_avatar {
+  width: : 60px;
+  height: 60px;
+}

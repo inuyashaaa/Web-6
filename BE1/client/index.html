@@ -15,10 +15,10 @@
       <nav class="container">
         <div class="row">
           <div class="col-sm-1 text-center">
-            <a class="btn btn-button btn-primary" href="/image/add">Image</a></label>
+            <a class="btn btn-button btn-primary" href="/image">Image</a></label>
           </div>
           <div class="col-sm-1 text-center">
-            <a class="btn btn-button btn-primary" href="/user/add">User</a>
+            <a class="btn btn-button btn-primary" href="/user">User</a>
           </div>
         </div>
         <div class="row">
@@ -48,6 +48,14 @@
       </nav>
     </header>
     <section class="container">
+      <div class="row">
+        <div class="col-sm-3">
+          <input type="text" class="form-control" placeholder="Search image" id="search_image_string">
+        </div>
+        <div class="col-sm-1">
+          <button class="btn btn-primary" id="search_image_button">Search</button>
+        </div>
+      </div>
       <div class="row" id="item_list">
       </div>
     </section>
@@ -94,8 +102,8 @@
     </script>
 
     <script type="text/javascript">
+      var itemTemplate = Handlebars.compile($("#item-template").html());
       $(document).ready(function(){
-        var itemTemplate = Handlebars.compile($("#item-template").html());
         requestImage(itemTemplate);
       });
 
@@ -105,6 +113,10 @@
 
       $('body').on('click','#signout_button', function() {
         signout();
+      })
+
+      $('body').on('click','#search_image_button', function() {
+        searchImage(itemTemplate);
       })
     </script>
   </body>

@@ -1,5 +1,7 @@
+var allUserTemplate;
+var allImageTemplate;
+
 $(document).ready(function() {
-  var itemTemplate = Handlebars.compile($("#item-template").html());
   checkToken();
 })
 
@@ -29,6 +31,8 @@ function signin() {
       $('#username_label').html(res.username);
       $('#user_label').show();
       $('#sign_in_form').hide();
+    } else {
+      alert(res);
     }
   }).fail(function(err) {
     console.log(err);
@@ -51,23 +55,44 @@ function requestImage(itemTemplate){
     type  : "get",
     url   : "api/image"
   }).then(function(data){
-    var data;
-    data.items = data;
-    var itemHtml = $(itemTemplate(data));
+    var displayData = {};
+    displayData.items = data;
+    var itemHtml = $(itemTemplate(displayData));
     $('#item_list').html(itemHtml);
   }).fail(function(error){
     console.log(error);
   });
 }
 
-function requestUser(userTemplate) {
+function searchImage(itemTemplate) {
+  var searchString = $('#search_image_string').val();
   $.ajax({
     type : "get",
-    url  : "/api/users"
+    url  : "api/image?s=" + searchString
   }).then(function(data){
-    var userHtml = $(userTemplate(data));
+    var displayData = {};
+    displayData.items = data;
+    var itemHtml = $(itemTemplate(displayData));
+    $('#item_list').html(itemHtml);
   }).fail(function(error){
     console.log(error);
+  });
+}
+
+function likeImage(imageId) {
+  var data = imageId;
+  //console.log(id);
+  $.ajax({
+    type : "post",
+    url : "../api/image/like",
+    data : {
+      id : imageId
+    }
+  }).then(function(result){
+      console.log(result);
+      //requestImage(itemTemplate);
+  }).fail(function(err) {
+      console.log(err);
   })
 }
 
@@ -89,35 +114,89 @@ function getEditImage(imageEditTemplate) {
   }
 }
 
-function editImage(data) {
+function updateImage(data) {
   $.ajax({
     type : "put",
     url : "../api/image",
     data : data
-  }).then(function(result){
-    alert(result);
+  }).then(function(res){
+    alert('done');
   }).fail(function(error) {
     console.log(error);
   })
 }
 
-function likeImage(imageId) {
-  var data = imageId;
-  //console.log(id);
+function requestUser() {
   $.ajax({
-    type : "post",
-    url : "../api/image/like",
-    data : {
-      id : imageId
-    }
-  }).then(function(result){
-      console.log(result);
-      //requestImage(itemTemplate);
-  }).fail(function(err) {
-      console.log(err);
+    type : "get",
+    url  : "/api/users"
+  }).then(function(data){
+    renderUser(data);
+  }).fail(function(error){
+    console.log(error);
   })
 }
+
+function searchUser(searchText) {
+  $.ajax({
+    type : "get",
+    url : "/api/users?s=" + searchText
+  }).then(function(data) {
+    renderUser(data);
+  }).fail(function(error){
+    console.log(error);
+  })
+}
+
+function getEditUser(userEditTemplate) {
+  var id = getQueryStringValue("id");
+  if (id) {
+    $.ajax({
+      type : "get",
+      url : "/api/users?id=" + id
+    }).then(function(data) {
+      var userHtml = $(userEditTemplate(data));
+      $('#user_info').html(userHtml);
+    }).fail(function(error) {
+      console.log(error);
+    })
+  }
+}
+
+function updateUser(data) {
+  $.ajax({
+    type : "put",
+    url  : "/api/users"
+  }).then(function(data){
+    alert('done');
+  }).fail(function(error){
+    console.log(error);
+  })
+}
+
+function renderUser(data) {
+  var userHtml = $(allUserTemplate(data));
+  $('#users_list').html(userHtml);
+}
+
+
 
 function getQueryStringValue (key) {
   return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
 }
+
+$.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name]) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
