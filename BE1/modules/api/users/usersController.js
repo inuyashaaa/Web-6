@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const usersModel = require('./usersModel');
 const token = require('../../utilities/token');
+const bcrypt = require('bcrypt');
 
 var createUser = (data, callback) => {
   usersModel.findOne({})
@@ -66,17 +67,53 @@ var searchUserByUsernameAndEmail = (searchString, callback) => {
 var signIn = (data, callback) => {
   if (data && data.username && data.password) {
     getUserByUsername(data.username, (err, user) => {
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(data.password, salt, (err, hash) => {
-          data.password = hash;
-          console.log('hash',hash);
+      if (user) {
+        bcrypt.compare(data.password, user.password, (err, res) => {
+          if (res) {
+            callback(null, user);
+          } else {
+            callback('sai password');
+          }
         })
-      })
+      } else {
+        callback('user not found');
+      }
     })
   }
 }
 
+var getUserByToken = (userToken, callback) => {
+    var userInfo = token.decodeToken(userToken);
+
+    getUserByUsername(userInfo.username, (err, doc) => {
+      if (doc) {
+        callback(null, doc);
+      } else {
+        callback('token not valid');
+      }
+    })
+}
+
+var authenMiddleware = (req, res, next) => {
+  var userToken = req.session.token;
+
+  getUserByToken(userToken, (err, doc) => {
+    if (doc) {
+      req.userInfo = {
+        id : doc._id,
+        username : doc.username
+      }
+      next();
+    } else {
+      res.send('Not authenticate');
+    }
+  })
+
+}
+
 module.exports = {
   createUser,
-  searchUserByUsernameAndEmail
+  searchUserByUsernameAndEmail,
+  signIn,
+  authenMiddleware
 }

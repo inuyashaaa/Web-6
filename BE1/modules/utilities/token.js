@@ -1,7 +1,12 @@
 const jwt = require('jsonwebtoken');
+const secretKey = 'secretKey';
 
 var signToken = (user) => {
-  return jwt.sign({ username : user.username, email : user.email }, user._id.toString());
+  return jwt.sign({ id: user._id, username : user.username, email : user.email }, secretKey);
+}
+
+var decodeToken = (token) => {
+  return jwt.verify(token, secretKey);
 }
 
 var verifyToken = (user, token) => {
@@ -12,4 +17,9 @@ var verifyToken = (user, token) => {
     console.log(err);
     return false;
   }
+}
+
+module.exports = {
+  signToken,
+  decodeToken
 }

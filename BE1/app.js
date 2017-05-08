@@ -10,6 +10,7 @@ const config = require('./config.json');
 const imagesRouter = require(__dirname + '/modules/api/images/');
 const usersRouter = require(__dirname + '/modules/api/users/');
 const clientRouter = require('./client');
+const session = require('express-session');
 
 var app = express();
 
@@ -17,6 +18,7 @@ var app = express();
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json({ extended : true}));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(session({ secret : 'lol', resave : false, saveUninitialized: true,  cookie : {} }))
 
 app.use('/', clientRouter);
 app.use('/api/image', imagesRouter);
