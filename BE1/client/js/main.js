@@ -79,6 +79,18 @@ function searchImage(itemTemplate) {
   });
 }
 
+function getOneImage(imageId, imageTemplate) {
+  $.ajax({
+    type : "get",
+    url : "../api/image?id=" + imageId
+  }).then(function(data){
+    var imageHtml = $(imageTemplate(data));
+    $('#image').html(imageHtml);
+  }).fail(function(error){
+    console.log(error);
+  })
+}
+
 function likeImage(imageId) {
   var data = imageId;
   //console.log(id);
@@ -94,6 +106,22 @@ function likeImage(imageId) {
   }).fail(function(err) {
       console.log(err);
   })
+}
+
+function postComment(content, imageId) {
+    var data = {
+      id : imageId,
+      content : content
+    }
+    $.ajax({
+      type : "post",
+      url : "../api/image/comment",
+      data: data
+    }).then(function(result) {
+      console.log(result);
+    }).fail(function(err) {
+      console.log(err);
+    })
 }
 
 function getEditImage(imageEditTemplate) {

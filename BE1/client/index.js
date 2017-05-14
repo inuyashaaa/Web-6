@@ -17,6 +17,10 @@ router.get('/image/edit', (req, res) => {
   res.sendFile(__dirname + '/editImage.html');
 })
 
+router.get('/image/view', (req, res) => {
+  res.sendFile(__dirname + '/viewImage.html');
+})
+
 router.get('/user', (req, res) => {
   res.sendFile(__dirname + '/userManager.html');
 })

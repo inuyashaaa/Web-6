@@ -37,7 +37,6 @@ var getAllImages = (cb) => {
     if (err) {
       cb(err);
     } else {
-      console.log('result',doc);
       cb(null, doc);
     }
   })

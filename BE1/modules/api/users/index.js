@@ -46,12 +46,14 @@ Router.post('/signin', (req, res) => {
       }
       req.session.token = newToken;
       req.session.userInfo = userInfo;
+      res.cookie('jwtToken', newToken)
       res.send({username : user.username});
     }
   })
 })
 
 Router.get('/me', usersController.authenMiddleware, (req, res) => {
+  console.log('token',req.cookies.jwtToken);
   if (req.userInfo) {
     res.send({username : req.userInfo.username});
   } else {

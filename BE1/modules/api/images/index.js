@@ -4,6 +4,14 @@ const Router = express.Router();
 
 const imagesController = require('./imagesController');
 
+var testmiddleware = (req, res, next) => {
+  console.log('testmiddleware image');
+  req.test = 'testmiddleware image';
+  next();
+}
+
+Router.use(testmiddleware);
+
 Router.post('/', (req, res) => {
   //khai bao object
   var imageInfo = {
@@ -27,6 +35,7 @@ Router.post('/', (req, res) => {
 });
 
 Router.get('/', (req, res) => {
+  console.log('get image test middleware', req.test);
   try {
     imagesController.getAllCookedImages((err, doc) => {
        if (err) {

@@ -1,5 +1,3 @@
-console.log('Hello nodemon');
-
 const fs = require('fs');
 //dung cai thu vien express
 const express = require('express');
@@ -11,6 +9,7 @@ const imagesRouter = require(__dirname + '/modules/api/images/');
 const usersRouter = require(__dirname + '/modules/api/users/');
 const clientRouter = require('./client');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 var app = express();
 
@@ -19,6 +18,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json({ extended : true}));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({ secret : 'lol', resave : false, saveUninitialized: true,  cookie : {} }))
+app.use(cookieParser());
 
 app.use('/', clientRouter);
 app.use('/api/image', imagesRouter);

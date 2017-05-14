@@ -83,6 +83,7 @@ var signIn = (data, callback) => {
 }
 
 var getUserByToken = (userToken, callback) => {
+    console.log('user token', userToken);
     var userInfo = token.decodeToken(userToken);
 
     getUserByUsername(userInfo.username, (err, doc) => {
@@ -97,18 +98,21 @@ var getUserByToken = (userToken, callback) => {
 var authenMiddleware = (req, res, next) => {
   var userToken = req.session.token;
 
-  getUserByToken(userToken, (err, doc) => {
-    if (doc) {
-      req.userInfo = {
-        id : doc._id,
-        username : doc.username
+  if (userToken) {
+    getUserByToken(userToken, (err, doc) => {
+      if (doc) {
+        req.userInfo = {
+          id : doc._id,
+          username : doc.username
+        }
+        next();
+      } else {
+        res.send('Token invalid');
       }
-      next();
-    } else {
-      res.send('Not authenticate');
-    }
-  })
-
+    })
+  } else {
+    res.send('Not authenticate');
+  }
 }
 
 module.exports = {

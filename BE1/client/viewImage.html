@@ -11,24 +11,26 @@
     <script type="text/javascript" src="../js/main.js"></script>
   </head>
   <body>
-    <div id="image">
+    <div id="image" class="container">
     </div>
     <script id="item-modal-template" type="text/x-handlebars-template">
       <div>
-        <button type="button" class="plus_button plus_button_modal pull-left" data-item-id="{{id}}">
-          <span class="glyphicon glyphicon-plus"></span>
-        </button>
+        <div class="row">
+          <button type="button" class="plus_button plus_button_modal pull-left" data-item-id="{{id}}">
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
+        </div>
 
-        <div class="pull-right text-center item_modal_statistic">
-          <div>
+        <div class="text-center row">
+          <div class="col-sm-4">
             <span class="glyphicon glyphicon-eye-open"></span>
             <p>{{view}}</p>
           </div>
-          <div>
+          <div class="col-sm-4">
             <span class="glyphicon glyphicon-time"></span>
             <p>{{date}}</p>
           </div>
-          <div>
+          <div class="col-sm-4">
             <span class="glyphicon glyphicon-plus"></span>
             <p>{{plus}}</p>
           </div>
@@ -46,25 +48,36 @@
         <p>{{content}}</p>
       </div>
       <hr>
-      <div>
-        <img src="{{posterAvatar}}" class="author_avatar">
-        <p><strong>{{posterName}}</strong></p>
-        <p class="text-muted">{{posterTitle}}</p>
-      </div>
+      <h3>User Comment</h3>
         {{#each comments}}
           <div>
             <img src={{commentAvatar}} class="author_avatar">
             <span>{{commentName}}</span>
             <p>
-              {{content}}
+              Comment : {{content}}
             </p>
           </div>
         {{/each}}
       <div>
+        Comment :
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <input type="text" name="content" id="comment_input">
+          <button class="btn btn-button" onclick="sendComment()">Send</button>
+        </div>
       </div>
     </script>
     <script type="text/javascript">
-      
+      $(document).ready(function(){
+        var imageTemplate = Handlebars.compile($("#item-modal-template").html());
+        var imageId = getQueryStringValue('id');
+        getOneImage(imageId, imageTemplate);
+      })
+
+      function sendComment() {
+        postComment(imageId, $('#comment_input').val());
+      }
     </script>
   </body>
 </html>

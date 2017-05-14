@@ -14,7 +14,7 @@ var imagesModel = new Schema({
   }],
   comments : [{
     comment : { type : String },
-    commentBy : { type : Number }
+    commentBy : { type : ObjectId, ref : 'users' }
   }],
   createBy : { type : ObjectId, ref : 'users' }
 }, { timestamps : true });
