@@ -53,7 +53,7 @@ Router.post('/signin', (req, res) => {
 })
 
 Router.get('/me', usersController.authenMiddleware, (req, res) => {
-  console.log('token',req.cookies.jwtToken);
+  console.log('log user info', req.userInfo);
   if (req.userInfo) {
     res.send({username : req.userInfo.username});
   } else {

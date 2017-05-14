@@ -36,7 +36,7 @@ var createUser = (data, callback) => {
 
 var getUserByUsername = (username, callback) => {
   try {
-    usersModel.findOne({username : username}).exec((err, user) => {
+    usersModel.findOne({username : username}).populate('profile').exec((err, user) => {
       if (err) {
         callback(err);
       } else {
@@ -95,23 +95,64 @@ var getUserByToken = (userToken, callback) => {
     })
 }
 
+//return access result from author profile (true/false)
+var validateAccess = (author, accessLevel) => {
+  if (author && accessLevel) {
+    switch (accessLevel) {
+      case 1:
+        return author.read;
+        break;
+      case 2:
+        return author.create;
+        break;
+      case 3:
+        return author.update;
+        break;
+      case 4:
+      default:
+        return author.delete
+        break;
+    }
+  } else {
+    return false;
+  }
+}
+
+//middleware author check access to the page by user profile
+var authorMiddleware = (page, accessLevel) => {
+  return (req, res, next) => {
+    var userProfile = req.userInfo.profile;
+    var pageAuthor = userProfile.authors.find(x => x.page == page);
+    console.log('author', pageAuthor);
+    if (pageAuthor) {
+      if (validateAccess(pageAuthor, accessLevel)) {
+        next();
+      } else {
+        res.send('Khong co quyen');
+      }
+    } else {
+      res.send('Chua co profile');
+    }
+  }
+}
+
+//middleware authen : check pass userInfo to next middleware
 var authenMiddleware = (req, res, next) => {
   var userToken = req.session.token;
 
   if (userToken) {
     getUserByToken(userToken, (err, doc) => {
+      console.log("user ", doc);
       if (doc) {
+        console.log('set user info');
         req.userInfo = {
           id : doc._id,
-          username : doc.username
+          username : doc.username,
+          profile : doc.profile
         }
-        next();
-      } else {
-        res.send('Token invalid');
       }
-    })
-  } else {
-    res.send('Not authenticate');
+      next();
+    });
   }
 }
 
@@ -119,5 +160,6 @@ module.exports = {
   createUser,
   searchUserByUsernameAndEmail,
   signIn,
-  authenMiddleware
+  authenMiddleware,
+  authorMiddleware
 }

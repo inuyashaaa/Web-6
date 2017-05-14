@@ -3,6 +3,10 @@ const express = require('express');
 const Router = express.Router();
 
 const imagesController = require('./imagesController');
+const usersController = require('../users/usersController');
+
+const authorMiddleware = usersController.authorMiddleware;
+const authenMiddleware = usersController.authenMiddleware;
 
 var testmiddleware = (req, res, next) => {
   console.log('testmiddleware image');
@@ -12,7 +16,7 @@ var testmiddleware = (req, res, next) => {
 
 Router.use(testmiddleware);
 
-Router.post('/', (req, res) => {
+Router.post('/', authenMiddleware, authorMiddleware(1, 2),(req, res) => {
   //khai bao object
   var imageInfo = {
     name : req.body.name,
@@ -34,7 +38,7 @@ Router.post('/', (req, res) => {
   });
 });
 
-Router.get('/', (req, res) => {
+Router.get('/', authenMiddleware, authorMiddleware(1, 1), (req, res) => {
   console.log('get image test middleware', req.test);
   try {
     imagesController.getAllCookedImages((err, doc) => {
@@ -51,7 +55,7 @@ Router.get('/', (req, res) => {
   }
 })
 
-Router.put('/', (req, res) => {
+Router.put('/', authenMiddleware, authorMiddleware(1, 3), (req, res) => {
   if (req.body.id) {
     var newData = {
       name : req.body.name,
@@ -67,7 +71,12 @@ Router.put('/', (req, res) => {
   res.send(`Don't have id`);
 })
 
-Router.delete('/', (req, res) => {
+Router.get('/testimage', (req, res) => {
+  imagesController.getAllImages((err, doc) => {
+    res.send(doc);
+  })
+})
+Router.delete('/', authenMiddleware, authorMiddleware(1, 4), (req, res) => {
 
 })
 

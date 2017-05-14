@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const config = require('./config.json');
 const imagesRouter = require(__dirname + '/modules/api/images/');
 const usersRouter = require(__dirname + '/modules/api/users/');
+const profileRouter = require(__dirname + '/modules/api/profile');
 const clientRouter = require('./client');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
@@ -23,6 +24,7 @@ app.use(cookieParser());
 app.use('/', clientRouter);
 app.use('/api/image', imagesRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/profile', profileRouter);
 
 mongoose.connect(config.connectionString, (err) => {
   if (err) {
